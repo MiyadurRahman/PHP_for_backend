@@ -1,0 +1,494 @@
+# PHP Basics for Backend Development
+
+A beginner-friendly guide covering PHP fundamentals through building secure CRUD applications and JSON REST APIs.
+
+## Table of Contents
+
+- [1. What is PHP?](#1-what-is-php)
+- [2. Basic PHP Syntax](#2-basic-php-syntax)
+- [3. Variables and Data Types](#3-variables-and-data-types)
+- [4. Conditions](#4-conditions)
+- [5. Loops](#5-loops)
+- [6. Arrays](#6-arrays)
+- [7. Functions and Methods](#7-functions-and-methods)
+- [HTTP Methods Used in Backend Development](#http-methods-used-in-backend-development)
+- [Connecting PHP to MySQL](#connecting-php-to-mysql)
+- [CRUD Operations](#crud-operations)
+- [Creating a JSON API](#creating-a-json-api)
+- [Session and Authentication](#session-and-authentication)
+- [Essential Security Rules](#essential-security-rules)
+- [Recommended Learning Order](#recommended-learning-order)
+- [The `->` Operator](#the---operator)
+
+---
+
+## 1. What is PHP?
+
+**Technical definition:** PHP is a server-side scripting language used to create dynamic websites, APIs, and backend applications.
+
+**Simple definition:** PHP receives a request, performs operations such as database queries, and sends a response to the browser.
+
+```
+Browser → PHP Backend → Database → PHP Backend → Response
+```
+
+## 2. Basic PHP Syntax
+
+```php
+<?php
+
+echo "Hello, PHP!";
+```
+
+- PHP code begins with `<?php`
+- Most statements end with `;`
+- `echo` displays output
+
+## 3. Variables and Data Types
+
+Variables begin with `$`.
+
+```php
+$name = "Ronny";       // String
+$age = 25;             // Integer
+$salary = 35000.50;    // Float
+$isActive = true;      // Boolean
+$address = null;       // Null
+
+echo $name;
+```
+
+## 4. Conditions
+
+```php
+$age = 20;
+
+if ($age >= 18) {
+    echo "Adult";
+} else {
+    echo "Minor";
+}
+```
+
+Using `switch`:
+
+```php
+$status = "pending";
+
+switch ($status) {
+    case "pending":
+        echo "Waiting";
+        break;
+
+    case "completed":
+        echo "Completed";
+        break;
+
+    default:
+        echo "Unknown status";
+}
+```
+
+## 5. Loops
+
+```php
+for ($i = 1; $i <= 5; $i++) {
+    echo $i;
+}
+```
+
+```php
+$names = ["Rahim", "Karim", "Jamal"];
+
+foreach ($names as $name) {
+    echo $name;
+}
+```
+
+## 6. Arrays
+
+### Indexed array
+
+```php
+$colors = ["Red", "Green", "Blue"];
+
+echo $colors[0];
+```
+
+### Associative array
+
+```php
+$user = [
+    "name" => "Ronny",
+    "email" => "ronny@example.com",
+    "age" => 25
+];
+
+echo $user["email"];
+```
+
+## 7. Functions and Methods
+
+A function is a reusable block of code:
+
+```php
+function calculateTotal($price, $quantity)
+{
+    return $price * $quantity;
+}
+
+echo calculateTotal(500, 3);
+```
+
+A function inside a class is called a **method**:
+
+```php
+class Calculator
+{
+    public function add(int $a, int $b): int
+    {
+        return $a + $b;
+    }
+}
+
+$calculator = new Calculator();
+
+echo $calculator->add(10, 20);
+```
+
+---
+
+## HTTP Methods Used in Backend Development
+
+| Method | Purpose | Example |
+|--------|---------|---------|
+| GET    | Retrieve data | Get a user |
+| POST   | Create new data | Create a user |
+| PUT    | Replace existing data | Replace user information |
+| PATCH  | Partially update data | Change user email |
+| DELETE | Delete data | Delete a user |
+
+**Memory trick:**
+
+```
+Get → Post → Put/Patch → Delete
+Read → Create → Update → Remove
+```
+
+### GET Example
+
+URL:
+
+```
+profile.php?name=Ronny
+```
+
+PHP:
+
+```php
+$name = $_GET["name"] ?? "Guest";
+
+echo htmlspecialchars($name);
+```
+
+### POST Example
+
+HTML form:
+
+```html
+<form method="POST" action="register.php">
+    <input type="text" name="name">
+    <input type="email" name="email">
+    <button type="submit">Register</button>
+</form>
+```
+
+PHP:
+
+```php
+<?php
+
+$name = trim($_POST["name"] ?? "");
+$email = trim($_POST["email"] ?? "");
+
+echo htmlspecialchars($name);
+```
+
+---
+
+## Connecting PHP to MySQL
+
+PDO is a secure and recommended method for database operations.
+
+```php
+<?php
+
+$pdo = new PDO(
+    "mysql:host=localhost;dbname=my_app;charset=utf8mb4",
+    "root",
+    "",
+    [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]
+);
+```
+
+> In production, database credentials should be stored in environment variables.
+
+---
+
+## CRUD Operations
+
+CRUD stands for:
+
+| Operation | SQL | HTTP method |
+|-----------|-----|-------------|
+| Create | INSERT | POST |
+| Read | SELECT | GET |
+| Update | UPDATE | PUT/PATCH |
+| Delete | DELETE | DELETE |
+
+### Create
+
+```php
+$sql = "INSERT INTO users (name, email)
+        VALUES (:name, :email)";
+
+$stmt = $pdo->prepare($sql);
+
+$stmt->execute([
+    "name" => "Ronny",
+    "email" => "ronny@example.com"
+]);
+```
+
+### Read
+
+```php
+$stmt = $pdo->query(
+    "SELECT id, name, email FROM users"
+);
+
+$users = $stmt->fetchAll();
+
+foreach ($users as $user) {
+    echo htmlspecialchars($user["name"]);
+}
+```
+
+### Update
+
+```php
+$sql = "UPDATE users
+        SET name = :name, email = :email
+        WHERE id = :id";
+
+$stmt = $pdo->prepare($sql);
+
+$stmt->execute([
+    "name" => "Updated Name",
+    "email" => "updated@example.com",
+    "id" => 1
+]);
+```
+
+### Delete
+
+```php
+$stmt = $pdo->prepare(
+    "DELETE FROM users WHERE id = :id"
+);
+
+$stmt->execute(["id" => 1]);
+```
+
+> Always use prepared statements to prevent SQL injection.
+
+---
+
+## Creating a JSON API
+
+```php
+<?php
+
+header("Content-Type: application/json");
+
+http_response_code(200);
+
+echo json_encode([
+    "success" => true,
+    "message" => "Users retrieved successfully",
+    "data" => []
+]);
+```
+
+Reading a JSON request:
+
+```php
+$data = json_decode(
+    file_get_contents("php://input"),
+    true
+);
+
+$name = trim($data["name"] ?? "");
+```
+
+---
+
+## Session and Authentication
+
+Start a session:
+
+```php
+session_start();
+
+$_SESSION["user_id"] = 10;
+```
+
+Protect a page:
+
+```php
+session_start();
+
+if (!isset($_SESSION["user_id"])) {
+    header("Location: login.php");
+    exit;
+}
+```
+
+Securely store passwords:
+
+```php
+$hash = password_hash(
+    "StrongPassword",
+    PASSWORD_DEFAULT
+);
+```
+
+Verify a password:
+
+```php
+if (password_verify($password, $hash)) {
+    echo "Login successful";
+}
+```
+
+---
+
+## Essential Security Rules
+
+- Validate every request on the server.
+- Use PDO prepared statements.
+- Hash passwords with `password_hash()`.
+- Escape HTML output with `htmlspecialchars()`.
+- Use CSRF protection for forms.
+- Never store passwords or secret keys directly in source code.
+- Use HTTPS in production.
+- Do not display database errors to users.
+
+---
+
+## Recommended Learning Order
+
+1. PHP syntax and variables
+2. Conditions, loops, and arrays
+3. Functions and classes
+4. HTML forms, GET, and POST
+5. Validation and error handling
+6. MySQL and PDO
+7. CRUD application
+8. Sessions and authentication
+9. JSON REST APIs
+10. MVC architecture
+11. Laravel framework
+
+> A good first backend project is a **User Management System** containing registration, login, user listing, editing, and deletion.
+
+---
+
+## The `->` Operator
+
+In PHP, `->` is called the **object operator**.
+
+It is used to access a property or call a method from an object.
+
+### Calling a method
+
+```php
+class Calculator
+{
+    public function add($a, $b)
+    {
+        return $a + $b;
+    }
+}
+
+$calculator = new Calculator();
+
+echo $calculator->add(10, 20);
+```
+
+Here:
+
+- `$calculator` is an object.
+- `->` accesses something inside the object.
+- `add()` is a method.
+- The result is `30`.
+
+### Accessing a property
+
+```php
+class User
+{
+    public string $name = "Ronny";
+}
+
+$user = new User();
+
+echo $user->name;
+```
+
+Result:
+
+```
+Ronny
+```
+
+Notice that you write:
+
+```php
+$user->name
+```
+
+Not:
+
+```php
+$user->$name
+```
+
+### Easy meaning
+
+Read `->` as **"has"** or **"use from."**
+
+```php
+$user->name;
+```
+
+Means: *The user object has a name.*
+
+```php
+$calculator->add(10, 20);
+```
+
+Means: *Use the `add()` method from the calculator object.*
+
+### Similar PHP symbols
+
+| Symbol | Purpose | Example |
+|--------|---------|---------|
+| `->` | Access object property/method | `$user->name` |
+| `::` | Access static property/method | `User::create()` |
+| `=>` | Assign an array key to a value | `"name" => "Ronny"` |
+
+**Memory trick:** Object `->` Inside item
