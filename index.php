@@ -24,7 +24,39 @@
     echo "<h2>Hello, PHP!</h2>";
     echo "My name is $name and my favorite number is $variable1.<br>";
 
-    // 3. ARRAYS
+    // 3. STRINGS
+// Strings can be written with double or single quotes
+    $greeting = "Hello";        // Double quotes allow variables inside ("$name")
+    $single = 'World';          // Single quotes keep text exactly as written
+
+    // Concatenation joins strings with the . operator
+    echo $greeting . " " . $single . "<br>";
+
+    // Double quotes interpolate variables and escape sequences
+    echo "$greeting from PHP!\n"; // \n is a newline (in HTML it looks like a space)
+    echo "Tab separated:\tA\tB\tC<br>";
+
+    // Useful string functions
+    $msg = "  PHP is fun!  ";
+    echo "Length: " . strlen($msg) . "<br>";
+    echo "Uppercase: " . strtoupper($msg) . "<br>";
+    echo "Trimmed: [" . trim($msg) . "]<br>";
+    echo "Replace: " . str_replace("fun", "awesome", trim($msg)) . "<br>";
+    echo "First 2 chars: " . substr(trim($msg), 0, 2) . "<br>";
+    echo "Position of 'is': " . strpos($msg, "is") . "<br>";
+
+    // String to number conversions (type juggling)
+    $numStr = "42";
+    echo "42 + 8 = " . ($numStr + 8) . "<br>"; // PHP converts the string automatically
+
+    // heredoc: multi-line strings (like template literals in JS)
+    $multi = <<<TEXT
+PHP supports heredoc syntax
+for multi-line strings.
+TEXT;
+    echo $multi . "<br>";
+
+    // 4. ARRAYS
 // Arrays hold multiple values in a single variable
 // Prefer the short [] syntax (PHP 5.4+) over the older array() syntax
     $fruits = ["Apple", "Banana", "Orange"];
@@ -67,7 +99,7 @@
     ];
     echo $person["name"] . " is " . $person["age"] . " years old.<br>";
 
-    // 4. CONDITIONAL STATEMENTS (if / else)
+    // 5. CONDITIONAL STATEMENTS (if / else)
 // Used to make decisions in code
     if ($variable1 > 20) {
         echo "variable1 is greater than 20!<br>";
@@ -75,7 +107,7 @@
         echo "variable1 is 20 or less.<br>";
     }
 
-    // 5. LOOPS
+    // 6. LOOPS
 // Used to run the same code multiple times
     
     // 'for' loop: good for when you know how many times it should run
@@ -92,7 +124,7 @@
     }
     echo "<br>";
 
-    // 6. FUNCTIONS
+    // 7. FUNCTIONS
 // Functions are reusable blocks of code
 // Declaring parameter and return types lets PHP catch mistakes early (PHP 7+)
     function greet(string $personName): string
@@ -103,6 +135,18 @@
 
     // Calling the function
     echo greet("Charlie");
+
+    // string
+    $str = "This th";
+echo $str. "<br>";
+$lenn = strlen($str);
+echo "The length of this string is ". $lenn . ". Thank you <br>";
+echo "The number of words in this string is ". str_word_count($str) . ". Thank you
+<br>";
+echo "The reversed string is ". strrev($str) . ". Thank you <br>";
+echo "The search for is in this string is ". strpos($str, "is") .". Thank you <br>";
+echo "The replaced string is ". str_replace("is", "at", $str) . ". Thank you <br>";
+// echo $lenn;
     ?>
 </body>
 
