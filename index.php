@@ -33,6 +33,10 @@
         echo "{$department[$i]}" . "<br> "; // Braces {} make complex expressions unambiguous inside "..."
     }
 
+    //another way 
+    $languages=array("python","english","arabic");
+    echo "$languages[0]";
+
 
     echo "The first fruit is: " . $fruits[0] . "<br>"; // Indexes start at 0
     echo "There are " . count($fruits) . " fruits: " . implode(", ", $fruits) . "<br>";
